@@ -14,6 +14,7 @@ var typing = require('./resources/typing');
 var reactions = require('./resources/reactions');
 var server = require('./resources/server');
 var filters = require('./resources/filters');
+var upload = require('./resources/upload');
 
 function getCallEndpoint(config) {
   return function callEndpoint(endpoint) {
@@ -44,7 +45,8 @@ function resources(config) {
     typing: typing(config),
     reactions: reactions(config),
     server: server(config),
-    filters: filters(config)
+    filters: filters(config),
+    upload: upload(config),
   };
 }
 
