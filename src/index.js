@@ -1,35 +1,38 @@
-import parseConfigFile from './zuliprc';
+'use strict';
 
-const api = require('./api');
 
-const accounts = require('./resources/accounts');
-const streams = require('./resources/streams');
-const messages = require('./resources/messages');
-const queues = require('./resources/queues');
-const events = require('./resources/events');
-const users = require('./resources/users');
-const emojis = require('./resources/emojis');
-const typing = require('./resources/typing');
-const reactions = require('./resources/reactions');
-const server = require('./resources/server');
-const filters = require('./resources/filters');
+var api = require('./api');
+
+var accounts = require('./resources/accounts');
+var streams = require('./resources/streams');
+var messages = require('./resources/messages');
+var queues = require('./resources/queues');
+var events = require('./resources/events');
+var users = require('./resources/users');
+var emojis = require('./resources/emojis');
+var typing = require('./resources/typing');
+var reactions = require('./resources/reactions');
+var server = require('./resources/server');
+var filters = require('./resources/filters');
 
 function getCallEndpoint(config) {
-  return function callEndpoint(endpoint, method = 'GET', params) {
-    const myConfig = Object.assign({}, config);
-    let finalendpoint = endpoint;
+  return function callEndpoint(endpoint) {
+    var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'GET';
+    var params = arguments[2];
+
+    var myConfig = Object.assign({}, config);
+    var finalendpoint = endpoint;
     if (!endpoint.startsWith('/')) {
-      finalendpoint = `/${endpoint}`; // eslint-disable-line
+      finalendpoint = '/' + endpoint; // eslint-disable-line
     }
-    const url = myConfig.apiURL + finalendpoint;
+    var url = myConfig.apiURL + finalendpoint;
     return api(url, myConfig, method, params);
   };
 }
 
-
 function resources(config) {
   return {
-    config,
+    config: config,
     callEndpoint: getCallEndpoint(config),
     accounts: accounts(config),
     streams: streams(config),
@@ -41,23 +44,21 @@ function resources(config) {
     typing: typing(config),
     reactions: reactions(config),
     server: server(config),
-    filters: filters(config),
+    filters: filters(config)
   };
 }
 
 function zulip(initialConfig) {
-  if (initialConfig.zuliprc) {
-    return parseConfigFile(initialConfig.zuliprc).then(config => resources(config));
-  }
-  const config = initialConfig;
+  
+  var config = initialConfig;
   if (config.realm.endsWith('/api')) {
-    config.apiURL = `${config.realm}/v1`;
+    config.apiURL = config.realm + '/v1';
   } else {
-    config.apiURL = `${config.realm}/api/v1`;
+    config.apiURL = config.realm + '/api/v1';
   }
 
   if (!config.apiKey) {
-    return accounts(config).retrieve().then((res) => {
+    return accounts(config).retrieve().then(function (res) {
       config.apiKey = res.api_key;
       return resources(config);
     });

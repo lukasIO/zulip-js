@@ -1,12 +1,10 @@
-import readFile from 'fs-readfile-promise';
+
 import { parse } from 'ini';
 
-function parseConfigFile(filename) {
-  return readFile(filename)
-    .then(buf => buf.toString())
-    .then(parse)
+function parseConfigFile(strContent) {
+  return parse(strContent)
     .then((parsedConfig) => {
-      const config = {
+        const config = {
         realm: parsedConfig.api.site,
         username: parsedConfig.api.email,
         apiKey: parsedConfig.api.key,

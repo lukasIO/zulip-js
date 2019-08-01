@@ -1,6 +1,3 @@
-require('es6-promise').polyfill();
-
-const helper = require('../helper');
 
 function accounts(config) {
   return {

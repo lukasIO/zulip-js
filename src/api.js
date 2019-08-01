@@ -1,22 +1,26 @@
-require('es6-promise').polyfill();
-const helper = require('./helper');
+'use strict';
+
 
 function api(baseUrl, config, method, params) {
-  let url = baseUrl;
-  const auth = Buffer.from(`${config.username}:${config.apiKey}`).toString('base64');
-  const authHeader = `Basic ${auth}`;
-  const options = { method, headers: { Authorization: authHeader } };
+  var url = baseUrl;
+  var auth = btoa(config.username + ':' + config.apiKey);
+  var authHeader = 'Basic ' + auth;
+  var options = { method: method, headers: { Authorization: authHeader } };
   if (method === 'POST') {
-    options.body = new helper.FormData();
-    Object.keys(params).forEach((key) => {
+    options.body = new FormData();
+    Object.keys(params).forEach(function (key) {
       options.body.append(key, params[key]);
     });
   } else if (params) {
-    const generateQueryParam = key => `${key}=${params[key]}`;
-    const queryParams = Object.keys(params).map(generateQueryParam);
-    url = `${url}?${queryParams.join('&')}`;
+    var generateQueryParam = function generateQueryParam(key) {
+      return key + '=' + params[key];
+    };
+    var queryParams = Object.keys(params).map(generateQueryParam);
+    url = url + '?' + queryParams.join('&');
   }
-  return helper.fetch(url, options).then(res => res.json());
+  return fetch(url, options).then(function (res) {
+    return res.json();
+  });
 }
 
 module.exports = api;
