@@ -1,31 +1,27 @@
-'use strict';
-
 
 function api(baseUrl, config, method, params, isFile = false) {
-  var url = baseUrl;
-  var auth = btoa(config.username + ':' + config.apiKey);
-  var authHeader = 'Basic ' + auth;
-  var options = { method: method, headers: { Authorization: authHeader } };
+  let url = baseUrl;
+  const auth = btoa(`${config.username}:${config.apiKey}`);
+  const authHeader = `Basic ${auth}`;
+  const options = { method, headers: { Authorization: authHeader } };
   if (method === 'POST') {
-    if(!isFile) {
+    if (!isFile) {
       options.body = new FormData();
-      Object.keys(params).forEach(function (key) {
+      Object.keys(params).forEach((key) => {
         options.body.append(key, params[key]);
       });
     } else {
       options.body = new FormData();
-      options.body.append("file", params);
+      options.body.append('file', params);
     }
   } else if (params) {
-    var generateQueryParam = function generateQueryParam(key) {
-      return key + '=' + params[key];
+    const generateQueryParam = function generateQueryParam(key) {
+      return `${key}=${params[key]}`;
     };
-    var queryParams = Object.keys(params).map(generateQueryParam);
-    url = url + '?' + queryParams.join('&');
+    const queryParams = Object.keys(params).map(generateQueryParam);
+    url = `${url}?${queryParams.join('&')}`;
   }
-  return fetch(url, options).then(function (res) {
-    return res.json();
-  });
+  return fetch(url, options).then(res => res.json());
 }
 
 module.exports = api;
