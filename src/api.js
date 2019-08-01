@@ -14,7 +14,7 @@ function api(baseUrl, config, method, params, isFile = false) {
       });
     } else {
       options.body = new FormData();
-      options.body.append("files", params);
+      options.body.append("file", params);
     }
   } else if (params) {
     var generateQueryParam = function generateQueryParam(key) {
