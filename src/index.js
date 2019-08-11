@@ -13,6 +13,7 @@ const reactions = require('./resources/reactions');
 const server = require('./resources/server');
 const filters = require('./resources/filters');
 const upload = require('./resources/upload');
+const image = require('./resources/media');
 
 function getCallEndpoint(config) {
   return function callEndpoint(endpoint) {
@@ -20,7 +21,7 @@ function getCallEndpoint(config) {
     const params = arguments[2];
 
     const myConfig = Object.assign({}, config);
-    const finalendpoint = endpoint;
+    let finalendpoint = endpoint;
     if (!endpoint.startsWith('/')) {
       finalendpoint = '/' + endpoint; // eslint-disable-line
     }
@@ -45,6 +46,7 @@ function resources(config) {
     server: server(config),
     filters: filters(config),
     upload: upload(config),
+    image: image(config),
   };
 }
 

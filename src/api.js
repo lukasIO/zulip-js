@@ -21,7 +21,10 @@ function api(baseUrl, config, method, params, isFile = false) {
     const queryParams = Object.keys(params).map(generateQueryParam);
     url = `${url}?${queryParams.join('&')}`;
   }
-  return fetch(url, options).then(res => res.json());
+  if (!isFile) {
+    return fetch(url, options).then(res => res.json());
+  }
+  return fetch(url, options);
 }
 
 module.exports = api;
