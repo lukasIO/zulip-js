@@ -4,7 +4,7 @@ function upload(config) {
   const baseURL = `${config.apiURL}/user_uploads`;
   return {
     file: (fileList) => {
-        return api(baseURL, config, 'POST', fileList, true);
+        return api(baseURL, config, 'POST', fileList);
     }, 
   };
 }
